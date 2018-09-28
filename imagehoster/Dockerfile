@@ -1,13 +1,31 @@
-FROM node:6
+FROM node:latest
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+ENV \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
 
-COPY package.json /usr/src/app/
-RUN npm install
+RUN \
+    adduser \
+        --disabled-password \
+        --group \
+        --home /var/lib/imagehosterd \
+        --shell /bin/bash \
+        --system \
+        imagehosterd
 
-COPY . /usr/src/app
+USER imagehosterd
 
-EXPOSE 80
+ENV HOME=/var/lib/imagehosterd
 
-CMD [ "npm", "start" ]
+WORKDIR ${HOME}
+
+COPY \
+    --chown=imagehosterd:imagehosterd \
+    . \
+    .
+
+RUN NODE_ENV=development npm install
+
+EXPOSE ${PORT}
+
+ENTRYPOINT ["npm", "run", "start"]

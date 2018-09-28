@@ -1,5 +1,5 @@
-FROM tarantool/tarantool:1.7
+FROM tarantool/tarantool:latest
 
-COPY *.lua *.sh /opt/tarantool/
+COPY . /opt/tarantool
 
-CMD ["/bin/sh", "/opt/tarantool/datastore-run.sh"]
+CMD ["tarantool", "/opt/tarantool/app.lua"]
